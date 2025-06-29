@@ -52,6 +52,7 @@ export async function requestToken(
       };
     }
 
+    // TODO do not typecast a response because you don't know what is going to be returned.
     const data = (await response.json()) as TokenApiResponse;
 
     if (data.response_code !== 0) {
@@ -102,6 +103,7 @@ export async function requestCategories(): Promise<CategoryResult> {
       };
     }
 
+    // TODO do not typecast a response because you don't know what is going to be returned.
     const data = (await response.json()) as CategoryApiResponse;
 
     if (!data?.trivia_categories) {
@@ -123,4 +125,65 @@ export async function requestCategories(): Promise<CategoryResult> {
   }
 }
 
-export async function requestCategoryCount(categoryId: number): Promise<void> {}
+export type CategoryCountApiResponse = {
+  category_id: number;
+  category_question_count: {
+    total_easy_question_count: number;
+    total_medium_question_count: number;
+    total_hard_question_count: number;
+    total_question_count: number;
+  };
+};
+
+export type CategoryCountResult =
+  | {
+      success: false;
+      error: string;
+    }
+  | {
+      success: true;
+      data: CategoryCountApiResponse;
+    };
+
+export async function requestCategoryCount(
+  categoryId: number
+): Promise<CategoryCountResult> {
+  try {
+    // validate the value exists
+    // 0 is falsy, but we should make sure it's not undefined
+    if (typeof categoryId !== "number") {
+      return {
+        success: false,
+        error: "CategoryId is null or empty",
+      };
+    }
+
+    const response = await fetch(
+      `${baseUrl}/api_count.php?category=${categoryId}`
+    );
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: "Api Error",
+      };
+    }
+
+    // TODO do not typecast a response because you don't know what is going to be returned.
+    const data = (await response.json()) as CategoryCountApiResponse;
+
+    // How to check if the data returned is what we expected?
+    // Look input making a function checking for specific keys.
+
+    return {
+      success: true,
+      data,
+    };
+  } catch (err: unknown) {
+    console.log(err);
+    return {
+      success: false,
+      error: "An unknown error occurred",
+    };
+  }
+}
