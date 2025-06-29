@@ -1,68 +1,52 @@
-import { useEffect, useState } from "react"
-
+import { useEffect, useState, type FormEvent } from "react";
+import { requestCategories, type CategoryResult } from "../../util/opentdb/api";
 
 const difficulties = ["easy", "medium", "hard"] as const;
 type Difficulty = typeof difficulties;
 
-type Form = {
-  category: "",
-  difficulty: Difficulty
-}
-
 // User is looking to select the category and difficulty
-export function StartScreen()
-{
-
+export function StartScreen() {
+  const [error, setError] = useState<string>("");
   // Categories
-  const [categories, setCategories] = useState<string[]>([])
+  const [categories, setCategories] = useState<string[]>([]);
 
-  // Difficulty
-  //
+  useEffect(() => {}, []);
 
-  
-  // Fetch Categories
-  useEffect(() => {
-    const getCategories = async () => {
-      try {
-      }
-      catch {
+  const onSubmit = async (e: FormEvent): Promise<void> => {
+    e.preventDefault();
 
-      }
-    }
-  }, [])
+    const result = await requestCategories();
 
+    console.log(result);
+  };
 
   return (
     <div>
-      
       <h1>Quizzin</h1>
 
-      <form onSubmit={(e) => {e.preventDefault(); console.log(e)}}>
+      {error ? <p>{error}</p> : null}
+
+      <form onSubmit={onSubmit}>
         <label htmlFor="category">Category</label>
-        {/* // TODO Use Selectable Type */}
         <select id="category" name="category">
-          {
-            categories.map((category, i) => (
-              <option key={category + i} value={category}>
-                {category}
-              </option>
-            ))
-          }
+          {categories.map((category, i) => (
+            <option key={category + i} value={category}>
+              {category}
+            </option>
+          ))}
         </select>
 
         <label htmlFor="difficulty">Difficulty</label>
-        {/* // TODO Use <Options></Options> or <Dropdown></Dropdown> */}
         <select id="difficulty" name="difficulty">
-          {
-            difficulties.map((difficulty, i) => (
-              <option key={i} value={difficulty}>{difficulty}</option>
-            ))
-          }
+          {difficulties.map((difficulty, i) => (
+            <option key={i} value={difficulty}>
+              {difficulty}
+            </option>
+          ))}
         </select>
-        
+
         <button type="submit">Start</button>
       </form>
-
     </div>
-  )
+  );
 }
