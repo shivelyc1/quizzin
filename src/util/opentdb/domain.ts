@@ -25,10 +25,7 @@ export type OpenTDBResult<T> =
     };
 
 export type CategoryApiResponse = {
-  trivia_categories: {
-    id: number;
-    name: string;
-  }[];
+  trivia_categories: CategoryApiItem[];
 };
 
 export type CategoryCountApiResponse = {
@@ -39,4 +36,9 @@ export type CategoryCountApiResponse = {
     total_hard_question_count: number;
     total_question_count: number;
   };
+};
+
+export type CategoryApiItem = {
+  id: number;
+  name: string;
 };
