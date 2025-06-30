@@ -13,12 +13,21 @@ export type TokenApiResponse = {
   response_code: number;
   token: string;
 };
-export type TokenResult =
+
+export type OpenTDBResult<T> =
   | {
       success: false;
       error: string;
     }
   | {
       success: true;
-      data: TokenApiResponse;
+      data: T;
     };
+
+export type CategoryApiResponse = {
+  trivia_categories: {
+    id: number;
+    name: string;
+  }[];
+};
+function TestingATheory() {}

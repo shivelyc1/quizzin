@@ -1,8 +1,9 @@
 import {
   type TokenApiCommand,
-  type TokenResult,
   type TokenApiResponse,
   responseTypes,
+  type CategoryApiResponse,
+  type OpenTDBResult,
 } from "./domain";
 /* type OpenTDbResource =
   | "api"
@@ -25,7 +26,7 @@ const baseUrl = "https://opentdb.com" as const;
 export async function requestToken(
   command: TokenApiCommand,
   token?: string
-): Promise<TokenResult> {
+): Promise<OpenTDBResult<TokenApiResponse>> {
   if (!command) {
     return {
       success: false,
@@ -75,24 +76,9 @@ export async function requestToken(
   }
 }
 
-export type CategoryApiResponse = {
-  trivia_categories: {
-    id: number;
-    name: string;
-  }[];
-};
-
-export type CategoryResult =
-  | {
-      success: false;
-      error: string;
-    }
-  | {
-      success: true;
-      data: CategoryApiResponse;
-    };
-
-export async function requestCategories(): Promise<CategoryResult> {
+export async function requestCategories(): Promise<
+  OpenTDBResult<CategoryApiResponse>
+> {
   try {
     const response = await fetch(`${baseUrl}/api_category.php`);
 
@@ -104,6 +90,7 @@ export async function requestCategories(): Promise<CategoryResult> {
     }
 
     // TODO do not typecast a response because you don't know what is going to be returned.
+    //
     const data = (await response.json()) as CategoryApiResponse;
 
     if (!data?.trivia_categories) {
@@ -147,7 +134,7 @@ export type CategoryCountResult =
 
 export async function requestCategoryCount(
   categoryId: number
-): Promise<CategoryCountResult> {
+): Promise<OpenTDBResult<CategoryCountApiResponse>> {
   try {
     // validate the value exists
     // 0 is falsy, but we should make sure it's not undefined
