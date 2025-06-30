@@ -4,6 +4,7 @@ import {
   responseTypes,
   type CategoryApiResponse,
   type OpenTDBResult,
+  type CategoryCountApiResponse,
 } from "./domain";
 /* type OpenTDbResource =
   | "api"
@@ -111,26 +112,6 @@ export async function requestCategories(): Promise<
     };
   }
 }
-
-export type CategoryCountApiResponse = {
-  category_id: number;
-  category_question_count: {
-    total_easy_question_count: number;
-    total_medium_question_count: number;
-    total_hard_question_count: number;
-    total_question_count: number;
-  };
-};
-
-export type CategoryCountResult =
-  | {
-      success: false;
-      error: string;
-    }
-  | {
-      success: true;
-      data: CategoryCountApiResponse;
-    };
 
 export async function requestCategoryCount(
   categoryId: number
