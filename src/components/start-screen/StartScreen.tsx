@@ -10,7 +10,7 @@ const difficulties = ["easy", "medium", "hard"] as const;
 type Difficulty = typeof difficulties;
 
 // User is looking to select the category and difficulty
-export function StartScreen() {
+export default function StartScreen() {
   const [error, setError] = useState<string>("");
 
   // Categories
@@ -34,6 +34,8 @@ export function StartScreen() {
 
   const onSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
+
+    // Next Page
   };
 
   const onChangeCategory = (e: ChangeEvent<HTMLSelectElement>) => {

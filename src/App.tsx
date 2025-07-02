@@ -1,13 +1,9 @@
-import './App.css'
-import { StartScreen } from './components/start-screen/StartScreen'
+import { RouterProvider } from "react-router-dom";
+import "./App.css";
+import { router } from "./router";
 
 function App() {
-
-  return (
-    <>
-      <StartScreen/>
-    </>
-  )
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;
