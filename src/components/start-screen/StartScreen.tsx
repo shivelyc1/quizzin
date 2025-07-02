@@ -1,36 +1,19 @@
-import { useEffect, useState, type FormEvent, type ChangeEvent } from "react";
-import { requestCategories } from "../../util/opentdb/api";
+import { useState, type FormEvent, type ChangeEvent } from "react";
 import type {
-  CategoryApiItem,
   CategoryApiResponse,
   OpenTDBResult,
 } from "../../util/opentdb/domain";
+import { useLoaderData } from "react-router-dom";
 
 const difficulties = ["easy", "medium", "hard"] as const;
 type Difficulty = typeof difficulties;
 
 // User is looking to select the category and difficulty
 export default function StartScreen() {
-  const [error, setError] = useState<string>("");
+  const data = useLoaderData<OpenTDBResult<CategoryApiResponse>>();
 
   // Categories
-  const [categories, setCategories] = useState<CategoryApiItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number>();
-  useEffect(() => {
-    const getCategories = async () => {
-      const result: OpenTDBResult<CategoryApiResponse> =
-        await requestCategories();
-
-      if (!result.success) {
-        setError(result.error);
-        return;
-      }
-
-      setCategories(result.data.trivia_categories);
-    };
-
-    getCategories();
-  }, []);
 
   const onSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
@@ -52,7 +35,7 @@ export default function StartScreen() {
     <div>
       <h1>Quizzin</h1>
 
-      {error ? <p>{error}</p> : null}
+      {!data.success ? <p>{data.error}</p> : null}
 
       <form onSubmit={onSubmit}>
         <label htmlFor="category">Category</label>
@@ -65,11 +48,12 @@ export default function StartScreen() {
           <option key={0} value={-1}>
             All
           </option>
-          {categories.map((category, i) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
+          {data.success &&
+            data.data.trivia_categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
         </select>
 
         <label htmlFor="difficulty">Difficulty</label>
